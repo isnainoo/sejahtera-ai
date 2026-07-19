@@ -8,7 +8,7 @@ import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'rechar
 const weightData = [
   { day: 'Sen', weight: 66, isCurrent: false },
   { day: 'Sel', weight: 65.8, isCurrent: false },
-  { day: 'Rab', weight: 65.5, isCurrent: true }, // Hari ini (Warna lebih gelap)
+  { day: 'Rab', weight: 65.5, isCurrent: true },
   { day: 'Kam', weight: 65.5, isCurrent: false },
   { day: 'Jum', weight: 65.3, isCurrent: false },
   { day: 'Sab', weight: 65.0, isCurrent: false },

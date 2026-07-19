@@ -8,7 +8,6 @@ export default function Onboarding() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // State untuk form sesuai struct Golang kita
   const [formData, setFormData] = useState({
     age: '',
     gender: 'Laki-laki',
@@ -30,7 +29,6 @@ export default function Onboarding() {
     setErrorMsg('');
 
     try {
-      // Konversi tipe data yang berupa angka agar diterima backend Golang
       const payload = {
         ...formData,
         age: parseInt(formData.age),
@@ -41,7 +39,6 @@ export default function Onboarding() {
 
       await api.post('/profile', payload);
       
-      // Jika berhasil simpan profil, arahkan ke Dashboard
       navigate('/dashboard');
     } catch (err) {
       setErrorMsg(err.response?.data?.error || 'Gagal menyimpan data profil.');

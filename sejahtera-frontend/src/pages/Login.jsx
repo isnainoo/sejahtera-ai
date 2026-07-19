@@ -15,13 +15,10 @@ export default function Login() {
     setErrorMsg('');
 
     try {
-      // Menembak API Golang yang sudah kita buat
       const response = await api.post('/auth/login', { email, password });
       
-      // Simpan token ke localStorage
       localStorage.setItem('token', response.data.token);
       
-      // Arahkan ke Dashboard (atau halaman Onboarding jika baru pertama kali)
       navigate('/dashboard'); 
     } catch (err) {
       setErrorMsg(err.response?.data?.error || 'Terjadi kesalahan saat login');

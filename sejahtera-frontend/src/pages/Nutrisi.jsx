@@ -3,17 +3,14 @@ import { LayoutDashboard, Utensils, Activity, HelpCircle, Search, Bell, Settings
 import api from '../services/api';
 
 export default function Nutrisi() {
-  // State untuk Analisis Makanan
   const [foodInput, setFoodInput] = useState('');
   const [foodResult, setFoodResult] = useState(null);
   const [isFoodLoading, setIsFoodLoading] = useState(false);
 
-  // State untuk Rekomendasi Resep
   const [recipeInput, setRecipeInput] = useState('');
   const [recipeResult, setRecipeResult] = useState(null);
   const [isRecipeLoading, setIsRecipeLoading] = useState(false);
 
-  // Handler Analisis Makanan
   const handleAnalyzeFood = async (e) => {
     e.preventDefault();
     setIsFoodLoading(true);
@@ -28,7 +25,6 @@ export default function Nutrisi() {
     }
   };
 
-  // Handler Rekomendasi Resep
   const handleGenerateRecipe = async (e) => {
     e.preventDefault();
     setIsRecipeLoading(true);

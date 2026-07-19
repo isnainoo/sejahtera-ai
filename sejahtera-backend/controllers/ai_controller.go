@@ -7,12 +7,11 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strings" // Tambahan library untuk membersihkan teks
+	"strings" 
 
 	"github.com/gin-gonic/gin"
 )
 
-// Struct Input dari Frontend
 type FoodInput struct {
 	FoodName string `json:"food_name" binding:"required"`
 }
@@ -21,7 +20,6 @@ type RecipeInput struct {
 	Ingredients string `json:"ingredients" binding:"required"`
 }
 
-// Struct untuk Request HTTP ke Gemini
 type GeminiRequest struct {
 	Contents []Content `json:"contents"`
 }
@@ -34,7 +32,6 @@ type Part struct {
 	Text string `json:"text"`
 }
 
-// Struct untuk Parsing Response HTTP dari Gemini
 type GeminiResponse struct {
 	Candidates []struct {
 		Content struct {
@@ -45,12 +42,9 @@ type GeminiResponse struct {
 	} `json:"candidates"`
 }
 
-// Fungsi Helper untuk memanggil Gemini API
 func callGeminiAPI(prompt string) (string, error) {
-	// TrimSpace akan menghapus karakter spasi/enter tersembunyi dari file .env
 	apiKey := strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
 
-	// Menggunakan model Gemini 2.5 Flash yang tersedia di akun Anda
 	modelName := "gemini-flash-latest"
 	url := fmt.Sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", modelName, apiKey)
 
@@ -74,10 +68,8 @@ func callGeminiAPI(prompt string) (string, error) {
 		return "", err
 	}
 
-	// Memunculkan respons di terminal backend untuk proses debugging
 	fmt.Println("RESPONS DARI GEMINI:", string(bodyBytes))
 
-	// Ekstrak teks balasan dari struktur JSON Gemini
 	var geminiResp GeminiResponse
 	if err := json.Unmarshal(bodyBytes, &geminiResp); err != nil {
 		return "", err
@@ -90,7 +82,6 @@ func callGeminiAPI(prompt string) (string, error) {
 	return "", fmt.Errorf("respons kosong dari AI")
 }
 
-// Endpoint 1: Analisis Nutrisi Makanan
 func AnalyzeFood(c *gin.Context) {
 	var input FoodInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -98,7 +89,6 @@ func AnalyzeFood(c *gin.Context) {
 		return
 	}
 
-	// Prompt Engineering: Memaksa AI menjawab JSON mentah
 	prompt := fmt.Sprintf(`Anda adalah ahli gizi. Analisis makanan berikut: "%s". 
 	Berikan estimasi kandungan nutrisi per porsi standar. 
 	Format jawaban HARUS berupa JSON murni (tanpa block markdown / backtick) dengan struktur persis seperti ini:
@@ -110,11 +100,9 @@ func AnalyzeFood(c *gin.Context) {
 		return
 	}
 
-	// Kirim langsung string JSON dari AI ke frontend
 	c.Data(http.StatusOK, "application/json", []byte(aiResponseText))
 }
 
-// Endpoint 2: Rekomendasi Resep Otomatis
 func GenerateRecipe(c *gin.Context) {
 	var input RecipeInput
 	if err := c.ShouldBindJSON(&input); err != nil {

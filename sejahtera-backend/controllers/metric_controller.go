@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"sejahtera-backend/models" // Kita gunakan models karena DB ada di sana
+	"sejahtera-backend/models" 
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +15,6 @@ type MetricInput struct {
 }
 
 func SaveMetric(c *gin.Context) {
-	// Ambil user_id dari token JWT
 	userID, exists := c.Get("user_id")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Sesi tidak valid, silakan login kembali"})
@@ -36,7 +35,6 @@ func SaveMetric(c *gin.Context) {
 		Date:   time.Now(),
 	}
 
-	// GANTI 'config.DB' menjadi 'models.DB'
 	if err := models.DB.Create(&metric).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan metrik harian"})
 		return

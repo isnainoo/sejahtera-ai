@@ -19,7 +19,6 @@ func ConnectDatabase() {
 		log.Fatal("Gagal terkoneksi ke database:", err)
 	}
 
-	// Menambahkan DailyMetric ke sini agar tabel otomatis terbuat
 	err = database.AutoMigrate(
 		&User{},
 		&UserProfile{},

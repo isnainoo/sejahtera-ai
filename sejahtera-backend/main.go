@@ -19,7 +19,6 @@ func main() {
 	
 	r := gin.Default()
 
-	// Middleware CORS
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
@@ -34,6 +33,5 @@ func main() {
 
 	routes.SetupRoutes(r)
 	
-	// Jalankan server
 	r.Run(":8080")
 }

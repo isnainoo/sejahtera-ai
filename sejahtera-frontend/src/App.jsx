@@ -3,7 +3,7 @@ import Login from './pages/Login';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Nutrisi from './pages/Nutrisi';
-import MetrikKesehatan from './pages/MetrikKesehatan'; // <-- Import halaman baru
+import MetrikKesehatan from './pages/MetrikKesehatan';
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/dashboard" element={<Dashboard />} /> 
         <Route path="/nutrisi" element={<Nutrisi />} /> 
-        <Route path="/metrik" element={<MetrikKesehatan />} /> {/* <-- Tambahkan route ini */}
+        <Route path="/metrik" element={<MetrikKesehatan />} />
       </Routes>
     </Router>
   );

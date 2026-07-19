@@ -18,14 +18,12 @@ export default function MetrikKesehatan() {
     e.preventDefault();
     
     try {
-      // Ubah tipe data string dari input form menjadi angka/float
       const payload = {
         weight: parseFloat(formData.weight),
         water: parseFloat(formData.water),
         sleep: parseFloat(formData.sleep)
       };
 
-      // Tembak endpoint Golang
       await api.post('/metrics', payload);
       
       setIsSaved(true);
