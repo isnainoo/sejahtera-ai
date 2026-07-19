@@ -49,7 +49,6 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-bg-gray flex flex-col items-center py-12 px-4">
-      {/* Header / Logo */}
       <div className="flex items-center gap-2 mb-8 text-brand-dark font-bold text-xl">
         <CheckCircle className="text-brand-green" />
         <span>Sejahtera AI</span>
@@ -67,13 +66,11 @@ export default function Onboarding() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Umur */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Umur (Tahun)</label>
               <input type="number" name="age" required value={formData.age} onChange={handleChange} placeholder="25" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50" />
             </div>
 
-            {/* Jenis Kelamin */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
               <select name="gender" value={formData.gender} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50">
@@ -82,13 +79,11 @@ export default function Onboarding() {
               </select>
             </div>
 
-            {/* Tinggi Badan */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tinggi Badan (cm)</label>
               <input type="number" name="height" required value={formData.height} onChange={handleChange} placeholder="170" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50" />
             </div>
 
-            {/* Berat Badan */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Berat Badan (kg)</label>
               <input type="number" name="weight" required value={formData.weight} onChange={handleChange} placeholder="65" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50" />
@@ -96,13 +91,11 @@ export default function Onboarding() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
-             {/* Target Tidur */}
              <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Target Tidur (Jam/Malam)</label>
               <input type="number" step="0.5" name="sleep_target" required value={formData.sleep_target} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50" />
             </div>
 
-            {/* Tingkat Aktivitas */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tingkat Aktivitas Fisik</label>
               <select name="activity_level" value={formData.activity_level} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50">
@@ -113,7 +106,6 @@ export default function Onboarding() {
               </select>
             </div>
 
-            {/* Target Kesehatan */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Target Kesehatan</label>
               <select name="health_target" value={formData.health_target} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50">
@@ -123,7 +115,6 @@ export default function Onboarding() {
               </select>
             </div>
 
-            {/* Preferensi Diet */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Preferensi Diet</label>
               <select name="diet_preference" value={formData.diet_preference} onChange={handleChange} className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-green outline-none bg-gray-50">

@@ -14,7 +14,7 @@ import (
 type RegisterInput struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
 type LoginInput struct {
@@ -72,7 +72,7 @@ func Login(c *gin.Context) {
 		"exp":     time.Now().Add(time.Hour * 72).Unix(),
 	})
 
-	jwtSecret := []byte(os.Getenv("JWT_SECRET")) 
+	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 	if len(jwtSecret) == 0 {
 		jwtSecret = []byte("rahasia_sejahtera_ai_2024")
 	}

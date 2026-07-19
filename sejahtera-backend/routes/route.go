@@ -25,6 +25,12 @@ func SetupRoutes(r *gin.Engine) {
 			protected.POST("/ai/generate-recipe", controllers.GenerateRecipe)
 
 			protected.POST("/metrics", controllers.SaveMetric)
+			protected.GET("/metrics", controllers.GetMetrics)
+			protected.PUT("/metrics/:id", controllers.UpdateMetric)
+
+			protected.POST("/food-logs", controllers.SaveFoodLog)
+			protected.GET("/food-logs", controllers.GetFoodLogs)
+			protected.PUT("/food-logs/:id", controllers.UpdateFoodLog)
 		}
 	}
 }

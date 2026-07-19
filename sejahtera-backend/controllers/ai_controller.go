@@ -122,3 +122,40 @@ func GenerateRecipe(c *gin.Context) {
 
 	c.Data(http.StatusOK, "application/json", []byte(aiResponseText))
 }
+
+type MetricAnalysisInput struct {
+	Weight float64 `json:"weight" binding:"required"`
+	Water  float64 `json:"water" binding:"required"`
+	Sleep  float64 `json:"sleep" binding:"required"`
+}
+
+func AnalyzeMetrics(c *gin.Context) {
+	var input MetricAnalysisInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	prompt := fmt.Sprintf(`Anda adalah asisten kesehatan holistik AI yang cerdas. 
+	Analisis metrik harian pengguna hari ini: 
+	- Berat badan: %.1f kg
+	- Minum air: %.1f Liter (Target standar harian 2.5L)
+	- Tidur: %.1f jam (Target standar harian 7-8 jam)
+	
+	Berikan 2 poin analisis yang sangat personal, memotivasi, dan berkesan 'pintar'. Kaitkan metrik tersebut dengan efek biologis atau psikologis (contoh: fokus kognitif, metabolisme, regenerasi sel).
+	
+	Format jawaban HARUS JSON murni berupa array (tanpa block markdown / backtick) dengan struktur persis seperti ini:
+	[
+	  {"icon": "check", "title": "Judul positif (maks 4 kata)", "description": "Penjelasan mendalam dan memotivasi... (maks 2 kalimat)"},
+	  {"icon": "trend", "title": "Judul progres (maks 4 kata)", "description": "Penjelasan dampak fisiologis dari data... (maks 2 kalimat)"}
+	]
+	Gunakan nilai "check" jika metrik mendekati/mencapai ideal, atau "trend" jika metrik menunjukkan perlunya peningkatan atau adaptasi.`, input.Weight, input.Water, input.Sleep)
+
+	aiResponseText, err := callGeminiAPI(prompt)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menganalisis metrik dengan AI"})
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", []byte(aiResponseText))
+}

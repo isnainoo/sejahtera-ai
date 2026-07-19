@@ -29,9 +29,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen bg-bg-gray">
-      {/* Sisi Kiri - Banner Hijau (Sembunyi di layar kecil) */}
       <div className="hidden lg:flex lg:w-1/2 bg-brand-dark p-12 text-white flex-col justify-center relative overflow-hidden">
-        {/* Efek gradien/glow ringan sesuai desain */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand-dark to-[#0a2e1f] opacity-80 z-0"></div>
         <div className="relative z-10 max-w-md">
           <h1 className="text-5xl font-bold mb-6 leading-tight">
@@ -43,7 +41,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Sisi Kanan - Form Login */}
       <div className="flex w-full lg:w-1/2 items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang Kembali</h2>
