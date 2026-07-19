@@ -1,0 +1,9 @@
+# Backend
+sejahtera-backend/.env
+sejahtera-backend/bin/
+sejahtera-backend/*.exe
+
+# Frontend
+node_modules/
+dist/
+.env
