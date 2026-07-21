@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"sejahtera-backend/models"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,12 +16,22 @@ type DailyFoodInput struct {
 	Dinner    string `json:"dinner"`
 }
 
-func generateAIAnalysisForFood(breakfast, lunch, dinner string) string {
-	if breakfast == "" { breakfast = "Belum diisi" }
-	if lunch == "" { lunch = "Belum diisi" }
-	if dinner == "" { dinner = "Belum diisi" }
+func generateAIAnalysisForFood(breakfast, lunch, dinner string, age int, gender string) string {
+	if breakfast == "" {
+		breakfast = "Belum diisi"
+	}
+	if lunch == "" {
+		lunch = "Belum diisi"
+	}
+	if dinner == "" {
+		dinner = "Belum diisi"
+	}
 
-	prompt := fmt.Sprintf(`Anda adalah ahli gizi AI. Analisis sesi makan ini:
+	prompt := fmt.Sprintf(`Anda adalah ahli gizi AI kelas dunia. 
+	Profil Pengguna saat ini: %s, Usia %d tahun. 
+	Gunakan perhitungan BMR/TDEE yang akurat untuk usia dan jenis kelamin tersebut untuk menilai asupan hariannya secara spesifik.
+	
+	Analisis sesi makan ini:
 	- Pagi: %s
 	- Siang: %s
 	- Malam: %s
@@ -39,12 +50,12 @@ func generateAIAnalysisForFood(breakfast, lunch, dinner string) string {
 		"total_protein": 55,
 		"total_karbohidrat": 130,
 		"total_lemak": 40,
-		"insight": "Penjelasan 2 kalimat tentang nutrisi...",
+		"insight": "Penjelasan 2 kalimat tentang kualitas nutrisi harian ini berdasarkan usia dan gendernya...",
 		"rekomendasi_besok": ["Saran 1", "Saran 2"]
 	  }
-	}`, breakfast, lunch, dinner)
+	}`, gender, age, breakfast, lunch, dinner)
 
-	aiResponseText, err := callGeminiAPI(prompt)
+	aiResponseText, err := callAlternativeAPI(prompt)
 	if err != nil {
 		return `{"error": "Gagal terhubung ke AI. Silakan edit kembali nanti."}`
 	}
@@ -60,10 +71,16 @@ func SaveFoodLog(c *gin.Context) {
 		return
 	}
 
-	analysisResult := generateAIAnalysisForFood(input.Breakfast, input.Lunch, input.Dinner)
+	var user models.User
+	if err := models.DB.First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User tidak ditemukan"})
+		return
+	}
+
+	analysisResult := generateAIAnalysisForFood(input.Breakfast, input.Lunch, input.Dinner, user.Age, user.Gender)
 
 	foodLog := models.FoodLog{
-		UserID:    uint(userID.(float64)),
+		UserID:    user.ID,
 		Breakfast: input.Breakfast,
 		Lunch:     input.Lunch,
 		Dinner:    input.Dinner,
@@ -106,7 +123,13 @@ func UpdateFoodLog(c *gin.Context) {
 		return
 	}
 
-	analysisResult := generateAIAnalysisForFood(input.Breakfast, input.Lunch, input.Dinner)
+	var user models.User
+	if err := models.DB.First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User tidak ditemukan"})
+		return
+	}
+
+	analysisResult := generateAIAnalysisForFood(input.Breakfast, input.Lunch, input.Dinner, user.Age, user.Gender)
 
 	foodLog.Breakfast = input.Breakfast
 	foodLog.Lunch = input.Lunch

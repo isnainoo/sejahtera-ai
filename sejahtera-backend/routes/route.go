@@ -14,23 +14,27 @@ func SetupRoutes(r *gin.Engine) {
 		{
 			auth.POST("/register", controllers.Register)
 			auth.POST("/login", controllers.Login)
+			auth.POST("/reset-password", controllers.ResetPassword)
 		}
 
 		protected := api.Group("/")
 		protected.Use(middlewares.RequireAuth)
 		{
-			protected.POST("/profile", controllers.SaveProfile)
+			protected.POST("/profile", controllers.SaveProfile)           
+			protected.GET("/profile", controllers.GetProfile)             
+			protected.PUT("/profile", controllers.UpdateProfile)          
+			protected.PUT("/profile/password", controllers.UpdatePassword)
 
 			protected.POST("/ai/analyze-food", controllers.AnalyzeFood)
 			protected.POST("/ai/generate-recipe", controllers.GenerateRecipe)
+			
+			protected.POST("/food-logs", controllers.SaveFoodLog)
+			protected.GET("/food-logs", controllers.GetFoodLogs)
+			protected.PUT("/food-logs/:id", controllers.UpdateFoodLog)
 
 			protected.POST("/metrics", controllers.SaveMetric)
 			protected.GET("/metrics", controllers.GetMetrics)
 			protected.PUT("/metrics/:id", controllers.UpdateMetric)
-
-			protected.POST("/food-logs", controllers.SaveFoodLog)
-			protected.GET("/food-logs", controllers.GetFoodLogs)
-			protected.PUT("/food-logs/:id", controllers.UpdateFoodLog)
 		}
 	}
 }

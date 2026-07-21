@@ -3,9 +3,8 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"time"
-
 	"sejahtera-backend/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +28,7 @@ func generateAIAnalysisForMetric(weight, water, sleep float64) string {
 	  {"icon": "trend", "title": "Judul progres (maks 4 kata)", "description": "Penjelasan dampak..."}
 	]`, weight, water, sleep)
 
-	aiResponseText, err := callGeminiAPI(prompt)
+	aiResponseText, err := callAlternativeAPI(prompt)
 	if err != nil {
 		return `[{"icon": "trend", "title": "Analisis Tertunda", "description": "Gagal terhubung ke AI. Silakan edit kembali metrik Anda nanti."}]`
 	}

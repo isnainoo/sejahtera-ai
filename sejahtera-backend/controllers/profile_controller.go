@@ -5,6 +5,7 @@ import (
 	"sejahtera-backend/models"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type ProfileInput struct {
@@ -62,4 +63,96 @@ func SaveProfile(c *gin.Context) {
 		"message": "Profil kesehatan berhasil disimpan!",
 		"data":    profile,
 	})
+}
+
+func GetProfile(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	var user models.User
+
+	if err := models.DB.Preload("Profile").First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User tidak ditemukan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
+type UpdateProfileInput struct {
+	Name   string  `json:"name"`
+	Email  string  `json:"email"`
+	Age    int     `json:"age"`
+	Gender string  `json:"gender"`
+	Height float64 `json:"height"`
+}
+
+func UpdateProfile(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+
+	var input UpdateProfileInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data tidak valid"})
+		return
+	}
+
+	var user models.User
+	if err := models.DB.First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User tidak ditemukan"})
+		return
+	}
+
+	user.Name = input.Name
+	user.Email = input.Email
+	user.Age = input.Age
+	user.Gender = input.Gender
+	models.DB.Save(&user)
+
+	var profile models.UserProfile
+	if err := models.DB.Where("user_id = ?", user.ID).First(&profile).Error; err != nil {
+		profile = models.UserProfile{
+			UserID: user.ID,
+			Age:    input.Age,
+			Gender: input.Gender,
+			Height: input.Height,
+		}
+		models.DB.Create(&profile)
+	} else {
+		profile.Age = input.Age
+		profile.Gender = input.Gender
+		profile.Height = input.Height
+		models.DB.Save(&profile)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Profil berhasil diperbarui"})
+}
+
+type UpdatePasswordInput struct {
+	OldPassword string `json:"old_password"`
+	NewPassword string `json:"new_password"`
+}
+
+func UpdatePassword(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+
+	var input UpdatePasswordInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Data tidak valid"})
+		return
+	}
+
+	var user models.User
+	if err := models.DB.First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User tidak ditemukan"})
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.OldPassword)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Password saat ini salah!"})
+		return
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(input.NewPassword), bcrypt.DefaultCost)
+	user.Password = string(hashedPassword)
+	models.DB.Save(&user)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password berhasil diubah"})
 }

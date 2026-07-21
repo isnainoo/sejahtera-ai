@@ -9,6 +9,8 @@ type User struct {
 	Name      string        `gorm:"size:100;not null" json:"name"`
 	Email     string        `gorm:"size:100;uniqueIndex;not null" json:"email"`
 	Password  string        `gorm:"not null" json:"-"`
+	Age       int           `json:"age"`
+	Gender    string        `gorm:"size:20" json:"gender"`
 	
 	Profile   UserProfile   `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"profile"`
 	Metrics   []DailyMetric `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"metrics"`

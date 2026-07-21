@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strings" 
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,44 +42,70 @@ type GeminiResponse struct {
 	} `json:"candidates"`
 }
 
-func callGeminiAPI(prompt string) (string, error) {
-	apiKey := strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
+func callAlternativeAPI(prompt string) (string, error) {
+	apiKey := os.Getenv("GROQ_API_KEY")
 
-	modelName := "gemini-flash-latest"
-	url := fmt.Sprintf("https://generativelanguage.googleapis.com/v1beta/models/%s:generateContent?key=%s", modelName, apiKey)
+	url := "https://api.groq.com/openai/v1/chat/completions"
 
-	reqBody := GeminiRequest{
-		Contents: []Content{{Parts: []Part{{Text: prompt}}}},
+	reqBody := map[string]interface{}{
+		"model": "llama-3.1-8b-instant",
+		"messages": []map[string]interface{}{
+			{"role": "system", "content": "You are a helpful API that outputs only pure JSON."},
+			{"role": "user", "content": prompt},
+		},
+		"temperature":     0.5,
+		"response_format": map[string]string{"type": "json_object"},
 	}
 
-	jsonData, err := json.Marshal(reqBody)
-	if err != nil {
-		return "", err
+	jsonData, _ := json.Marshal(reqBody)
+
+	var lastErr error
+	for i := 0; i < 3; i++ {
+		req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+		if err != nil {
+			return "", err
+		}
+
+		req.Header.Set("Content-Type", "application/json")
+		req.Header.Set("Authorization", "Bearer "+apiKey)
+
+		client := &http.Client{Timeout: 15 * time.Second}
+		resp, err := client.Do(req)
+
+		if err != nil {
+			lastErr = err
+			time.Sleep(time.Duration(i+2) * time.Second)
+			continue
+		}
+
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		if resp.StatusCode == http.StatusOK {
+			var aiResp struct {
+				Choices []struct {
+					Message struct {
+						Content string `json:"content"`
+					} `json:"message"`
+				} `json:"choices"`
+			}
+
+			if err := json.Unmarshal(bodyBytes, &aiResp); err != nil {
+				return "", err
+			}
+
+			if len(aiResp.Choices) > 0 {
+				return aiResp.Choices[0].Message.Content, nil
+			}
+		}
+
+		lastErr = fmt.Errorf("Status %d | Penjelasan Groq: %s", resp.StatusCode, string(bodyBytes))
+		fmt.Println("🚨 DETAIL ERROR GROQ:", lastErr)
+
+		time.Sleep(2 * time.Second)
 	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Println("RESPONS DARI GEMINI:", string(bodyBytes))
-
-	var geminiResp GeminiResponse
-	if err := json.Unmarshal(bodyBytes, &geminiResp); err != nil {
-		return "", err
-	}
-
-	if len(geminiResp.Candidates) > 0 && len(geminiResp.Candidates[0].Content.Parts) > 0 {
-		return geminiResp.Candidates[0].Content.Parts[0].Text, nil
-	}
-
-	return "", fmt.Errorf("respons kosong dari AI")
+	return "", lastErr
 }
 
 func AnalyzeFood(c *gin.Context) {
@@ -94,9 +120,9 @@ func AnalyzeFood(c *gin.Context) {
 	Format jawaban HARUS berupa JSON murni (tanpa block markdown / backtick) dengan struktur persis seperti ini:
 	{"kalori": 250, "protein": 10, "karbohidrat": 30, "lemak": 5, "serat": 3, "rekomendasi_menu_berikutnya": "Rekomendasi makanan..."}`, input.FoodName)
 
-	aiResponseText, err := callGeminiAPI(prompt)
+	aiResponseText, err := callAlternativeAPI(prompt)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memproses data dengan AI"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memproses data dengan AI, server mungkin sedang sibuk."})
 		return
 	}
 
@@ -106,21 +132,44 @@ func AnalyzeFood(c *gin.Context) {
 func GenerateRecipe(c *gin.Context) {
 	var input RecipeInput
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bahan makanan tidak boleh kosong"})
 		return
 	}
 
-	prompt := fmt.Sprintf(`Buatkan 1 resep masakan sehat menggunakan bahan-bahan berikut: %s. 
-	Format jawaban HARUS JSON murni tanpa block markdown dengan struktur:
-	{"nama_hidangan": "Nama", "bahan_tambahan": ["Bahan 1"], "langkah_memasak": ["Langkah 1", "Langkah 2"], "estimasi_kalori": 300}`, input.Ingredients)
+	prompt := fmt.Sprintf(`Anda adalah koki AI profesional. Buat 1 resep sehat berdasarkan bahan ini: %s.
+	Format respons WAJIB JSON murni (tanpa markdown/backtick) persis seperti ini:
+	{
+		"nama_hidangan": "Nama Masakan",
+		"estimasi_kalori": 450,
+		"bahan_tambahan": ["Bahan 1", "Bahan 2"],
+		"langkah_memasak": ["Langkah 1", "Langkah 2"]
+	}`, input.Ingredients)
 
-	aiResponseText, err := callGeminiAPI(prompt)
+	aiResponseText, err := callAlternativeAPI(prompt)
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal memproses resep dengan AI"})
+		fmt.Println("🚨 ERROR DARI GROQ:", err)
+		fallbackJSON := gin.H{
+			"nama_hidangan":   "Sistem AI Sedang Sibuk 🚦",
+			"estimasi_kalori": 0,
+			"bahan_tambahan":  []string{"Server AI sedang mengalami antrean."},
+			"langkah_memasak": []string{
+				"Sistem kami sudah mencoba menghubungi ulang otomatis, namun server masih penuh.",
+				"Silakan tunggu sekitar 30 detik agar batas antrean mereda.",
+				"Klik tombol 'Buat Resep Otomatis' kembali.",
+			},
+		}
+		c.JSON(http.StatusOK, fallbackJSON)
 		return
 	}
 
-	c.Data(http.StatusOK, "application/json", []byte(aiResponseText))
+	var recipeData map[string]interface{}
+	if err := json.Unmarshal([]byte(aiResponseText), &recipeData); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membaca respons dari AI"})
+		return
+	}
+
+	c.JSON(http.StatusOK, recipeData)
 }
 
 type MetricAnalysisInput struct {
@@ -151,7 +200,7 @@ func AnalyzeMetrics(c *gin.Context) {
 	]
 	Gunakan nilai "check" jika metrik mendekati/mencapai ideal, atau "trend" jika metrik menunjukkan perlunya peningkatan atau adaptasi.`, input.Weight, input.Water, input.Sleep)
 
-	aiResponseText, err := callGeminiAPI(prompt)
+	aiResponseText, err := callAlternativeAPI(prompt)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menganalisis metrik dengan AI"})
 		return
