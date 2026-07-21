@@ -44,7 +44,7 @@ export default function Login() {
       <div className="flex w-full lg:w-1/2 items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Selamat Datang Kembali</h2>
-          <p className="text-gray-500 mb-8">Silakan masukkan detail akun Anda untuk melanjutkan perjalanan kesehatan.</p>
+          <p className="text-gray-500 mb-8">Silakan masukkan akun Anda untuk melanjutkan perjalanan kesehatan.</p>
 
           {errorMsg && (
             <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm">
@@ -68,7 +68,7 @@ export default function Login() {
             <div>
               <div className="flex justify-between mb-1">
                 <label className="block text-sm font-medium text-gray-700">Kata Sandi</label>
-                <a href="#" className="text-sm text-brand-green hover:underline font-medium">Lupa Kata Sandi?</a>
+                <a href="/forgot-password" className="text-sm text-brand-green hover:underline font-medium">Lupa Kata Sandi?</a>
               </div>
               <input
                 type="password"
