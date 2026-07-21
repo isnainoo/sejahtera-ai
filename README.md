@@ -1,1 +1,1 @@
-tampilan terbaru: https://drive.google.com/drive/folders/1UEYgdxP5Wyk0AKgv47G-OntP6zrPKcUc?usp=sharing
+ui : https://www.figma.com/design/aLXx1W6pZ3We8oZY6LXbKK/Lomba-UI-UX?node-id=0-1&p=f&t=J2G76lpxDCWttjp8-0
