@@ -9,6 +9,7 @@ import MetrikKesehatan from './pages/MetrikKesehatan';
 import Bantuan from './pages/Bantuan';
 import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/bantuan" element={<Bantuan />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );

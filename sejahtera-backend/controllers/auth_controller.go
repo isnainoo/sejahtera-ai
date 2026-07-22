@@ -43,6 +43,7 @@ func Register(c *gin.Context) {
 		Password: string(hashedPassword),
 		Age:      input.Age,
 		Gender:   input.Gender,
+		Role:     "user",
 	}
 
 	if err := models.DB.Create(&user).Error; err != nil {
@@ -90,6 +91,12 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login berhasil",
 		"token":   tokenString,
+		"user": gin.H{
+			"id":    user.ID,
+			"name":  user.Name,
+			"email": user.Email,
+			"role":  user.Role,
+		},
 	})
 }
 

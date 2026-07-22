@@ -4,11 +4,36 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"sejahtera-backend/models"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
+
+func RequireAdmin(c *gin.Context) {
+	userID, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
+		c.Abort()
+		return
+	}
+
+	var user models.User
+	if err := models.DB.First(&user, uint(userID.(float64))).Error; err != nil {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Akses ditolak: User tidak ditemukan"})
+		c.Abort()
+		return
+	}
+
+	if user.Role != "admin" {
+		c.JSON(http.StatusForbidden, gin.H{"error": "Akses ditolak: Hanya untuk Admin"})
+		c.Abort()
+		return
+	}
+
+	c.Next()
+}
 
 func RequireAuth(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")

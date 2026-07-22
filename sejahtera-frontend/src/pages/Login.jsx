@@ -18,8 +18,16 @@ export default function Login() {
       const response = await api.post('/auth/login', { email, password });
       
       localStorage.setItem('token', response.data.token);
+      if (response.data.user) {
+        localStorage.setItem('role', response.data.user.role || 'user');
+        localStorage.setItem('userName', response.data.user.name || '');
+      }
       
-      navigate('/dashboard'); 
+      if (response.data.user && response.data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/dashboard'); 
+      }
     } catch (err) {
       setErrorMsg(err.response?.data?.error || 'Terjadi kesalahan saat login');
     } finally {
