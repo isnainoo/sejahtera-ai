@@ -36,5 +36,14 @@ func SetupRoutes(r *gin.Engine) {
 			protected.GET("/metrics", controllers.GetMetrics)
 			protected.PUT("/metrics/:id", controllers.UpdateMetric)
 		}
+
+		admin := api.Group("/admin")
+		admin.Use(middlewares.RequireAuth, middlewares.RequireAdmin)
+		{
+			admin.GET("/users", controllers.AdminGetUsers)
+			admin.POST("/users", controllers.AdminCreateUser)
+			admin.PUT("/users/:id", controllers.AdminUpdateUser)
+			admin.DELETE("/users/:id", controllers.AdminDeleteUser)
+		}
 	}
 }
