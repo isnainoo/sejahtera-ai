@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   LayoutDashboard, Utensils, Activity, HelpCircle, 
-  Search, Bell, Flame, Moon, Droplets, Smile, Dumbbell, Sparkles, BrainCircuit
+  Search, Bell, Flame, Moon, Droplets, Smile, Dumbbell, Sparkles, BrainCircuit, User
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import api from '../services/api';
@@ -90,7 +90,7 @@ export default function Dashboard() {
   }, []);
 
   const getInitials = (name) => {
-    if (!name) return "IS";
+    if (!name) return "";
     const names = name.split(' ');
     if (names.length >= 2) return (names[0][0] + names[1][0]).toUpperCase();
     return name.substring(0, 2).toUpperCase();
@@ -131,18 +131,18 @@ export default function Dashboard() {
             </span>
           </div>
           <nav className="p-4 space-y-2 mt-4">
-            <a href="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-brand-light text-brand-dark rounded-xl font-medium">
+            <Link to="/dashboard" className="flex items-center gap-3 px-4 py-3 bg-brand-light text-brand-dark rounded-xl font-medium">
               <LayoutDashboard size={20} /> Beranda
-            </a>
-            <a href="/nutrisi" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+            </Link>
+            <Link to="/nutrisi" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
               <Utensils size={20} /> Nutrisi (AI)
-            </a>
-            <a href="/metrik" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+            </Link>
+            <Link to="/metrik" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
               <Activity size={20} /> Metrik Kesehatan
-            </a>
-            <a href="/bantuan" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
+            </Link>
+            <Link to="/bantuan" className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors">
               <HelpCircle size={20} /> Bantuan
-            </a>
+            </Link>
           </nav>
         </div>
       </aside>
@@ -169,6 +169,47 @@ export default function Dashboard() {
         ) : (
           <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
             
+            <div className="bg-gradient-to-br from-brand-dark to-[#0a2e1f] rounded-2xl md:rounded-[2rem] p-5 md:p-8 text-white shadow-xl mb-4 md:mb-6 relative overflow-hidden">
+              <div className="absolute right-0 top-0 opacity-10 blur-sm transform translate-x-1/4 -translate-y-1/4"><BrainCircuit size={200} className="md:w-[300px] md:h-[300px]" /></div>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4 md:mb-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 shrink-0">
+                    <Sparkles className="text-brand-light w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg md:text-2xl font-bold">Sintesis Kesehatan AI</h2>
+                    <p className="text-gray-300 text-xs md:text-sm">Kesimpulan pola makan & aktivitas fisik Anda</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                  <div className="bg-black/20 rounded-xl md:rounded-2xl p-4 md:p-5 border border-white/10 backdrop-blur-md">
+                    <h3 className="font-bold text-brand-light text-sm md:text-base mb-2 md:mb-3 border-b border-white/10 pb-2 flex items-center gap-2">
+                      <Utensils size={14} className="md:w-4 md:h-4" /> Gizi & Metabolisme
+                    </h3>
+                    <p className="text-xs md:text-sm text-gray-200 leading-relaxed">
+                      {latestFood.insight !== '' ? latestFood.insight : 'Silakan isi Jurnal Nutrisi hari ini untuk insight AI.'}
+                    </p>
+                  </div>
+                  <div className="bg-black/20 rounded-xl md:rounded-2xl p-4 md:p-5 border border-white/10 backdrop-blur-md">
+                    <h3 className="font-bold text-brand-light text-sm md:text-base mb-2 md:mb-3 border-b border-white/10 pb-2 flex items-center gap-2">
+                      <Activity size={14} className="md:w-4 md:h-4" /> Fisiologis & Pemulihan
+                    </h3>
+                    {latestMetric.analysis.length > 0 ? (
+                      <ul className="space-y-2 md:space-y-3">
+                        {latestMetric.analysis.map((ai, idx) => (
+                          <li key={idx} className="text-xs md:text-sm text-gray-200 flex gap-2">
+                            <span className="text-brand-green mt-0.5">▪</span> {ai.description}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-xs md:text-sm text-gray-200 leading-relaxed">Silakan catat Metrik Kesehatan hari ini agar AI dapat mengukur pemulihan Anda.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-4 md:mb-6">
               <div className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-center">
                 <p className="text-gray-500 text-xs md:text-sm font-medium mb-1">BMI Hari Ini</p>
@@ -275,47 +316,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-brand-dark to-[#0a2e1f] rounded-2xl md:rounded-[2rem] p-5 md:p-8 text-white shadow-xl mb-4 md:mb-6 relative overflow-hidden">
-              <div className="absolute right-0 top-0 opacity-10 blur-sm transform translate-x-1/4 -translate-y-1/4"><BrainCircuit size={200} className="md:w-[300px] md:h-[300px]" /></div>
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4 md:mb-6">
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-sm border border-white/20 shrink-0">
-                    <Sparkles className="text-brand-light w-5 h-5 md:w-6 md:h-6" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg md:text-2xl font-bold">Sintesis Kesehatan AI</h2>
-                    <p className="text-gray-300 text-xs md:text-sm">Kesimpulan pola makan & aktivitas fisik Anda</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                  <div className="bg-black/20 rounded-xl md:rounded-2xl p-4 md:p-5 border border-white/10 backdrop-blur-md">
-                    <h3 className="font-bold text-brand-light text-sm md:text-base mb-2 md:mb-3 border-b border-white/10 pb-2 flex items-center gap-2">
-                      <Utensils size={14} className="md:w-4 md:h-4" /> Gizi & Metabolisme
-                    </h3>
-                    <p className="text-xs md:text-sm text-gray-200 leading-relaxed">
-                      {latestFood.insight !== '' ? latestFood.insight : 'Silakan isi Jurnal Nutrisi hari ini untuk insight AI.'}
-                    </p>
-                  </div>
-                  <div className="bg-black/20 rounded-xl md:rounded-2xl p-4 md:p-5 border border-white/10 backdrop-blur-md">
-                    <h3 className="font-bold text-brand-light text-sm md:text-base mb-2 md:mb-3 border-b border-white/10 pb-2 flex items-center gap-2">
-                      <Activity size={14} className="md:w-4 md:h-4" /> Fisiologis & Pemulihan
-                    </h3>
-                    {latestMetric.analysis.length > 0 ? (
-                      <ul className="space-y-2 md:space-y-3">
-                        {latestMetric.analysis.map((ai, idx) => (
-                          <li key={idx} className="text-xs md:text-sm text-gray-200 flex gap-2">
-                            <span className="text-brand-green mt-0.5">▪</span> {ai.description}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-xs md:text-sm text-gray-200 leading-relaxed">Silakan catat Metrik Kesehatan hari ini agar AI dapat mengukur pemulihan Anda.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
                   <h3 className="font-bold text-gray-900 text-base md:text-lg mb-4 md:mb-6">Target Kedisiplinan</h3>
@@ -385,23 +385,26 @@ export default function Dashboard() {
       </main>
 
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 px-2 pb-safe">
-        <a href="/dashboard" className="flex flex-col items-center text-brand-green">
+        <Link to="/dashboard" className="flex flex-col items-center text-brand-green transition-colors">
           <LayoutDashboard size={20} />
           <span className="text-[10px] font-bold mt-1">Beranda</span>
-        </a>
-        <a href="/nutrisi" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+        </Link>
+        <Link to="/nutrisi" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
           <Utensils size={20} />
           <span className="text-[10px] font-medium mt-1">Nutrisi</span>
-        </a>
-        <a href="/metrik" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+        </Link>
+        <Link to="/metrik" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
           <Activity size={20} />
           <span className="text-[10px] font-medium mt-1">Metrik</span>
-        </a>
-        <a href="/bantuan" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+        </Link>
+        <Link to="/bantuan" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
           <HelpCircle size={20} />
           <span className="text-[10px] font-medium mt-1">Bantuan</span>
-        </a>
-        
+        </Link>
+        <Link to="/profile" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+          <User size={20} />
+          <span className="text-[10px] font-medium mt-1">Profil</span>
+        </Link>
       </nav>
 
     </div>

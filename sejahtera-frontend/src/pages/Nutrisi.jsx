@@ -8,7 +8,7 @@ import api from '../services/api';
 import logo from '../assets/logosejahtera.png';
 
 const getInitials = (name) => {
-  if (!name) return 'US';
+  if (!name) return '';
   const words = name.trim().split(' ');
   if (words.length >= 2) {
     return (words[0][0] + words[1][0]).toUpperCase();
@@ -395,13 +395,17 @@ export default function Nutrisi() {
           <LayoutDashboard size={20} />
           <span className="text-[10px] font-medium mt-1">Beranda</span>
         </Link>
-        <Link to="/nutrisi" className="flex flex-col items-center text-brand-green">
+        <Link to="/nutrisi" className="flex flex-col items-center text-brand-green transition-colors">
           <Utensils size={20} />
           <span className="text-[10px] font-bold mt-1">Nutrisi</span>
         </Link>
         <Link to="/metrik" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
           <Activity size={20} />
           <span className="text-[10px] font-medium mt-1">Metrik</span>
+        </Link>
+        <Link to="/bantuan" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+          <HelpCircle size={20} />
+          <span className="text-[10px] font-medium mt-1">Bantuan</span>
         </Link>
         <Link to="/profile" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
           <User size={20} />

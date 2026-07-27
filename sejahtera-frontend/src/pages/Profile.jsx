@@ -115,7 +115,7 @@ export default function Profile() {
   };
 
   const getInitials = (name) => {
-    if (!name) return "IS";
+    if (!name) return "";
     const names = name.split(' ');
     if (names.length >= 2) return (names[0][0] + names[1][0]).toUpperCase();
     return name.substring(0, 2).toUpperCase();
@@ -304,7 +304,11 @@ export default function Profile() {
           <Activity size={20} />
           <span className="text-[10px] font-medium mt-1">Metrik</span>
         </Link>
-        <Link to="/profile" className="flex flex-col items-center text-brand-green">
+        <Link to="/bantuan" className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors">
+          <HelpCircle size={20} />
+          <span className="text-[10px] font-medium mt-1">Bantuan</span>
+        </Link>
+        <Link to="/profile" className="flex flex-col items-center text-brand-green transition-colors">
           <User size={20} />
           <span className="text-[10px] font-bold mt-1">Profil</span>
         </Link>

@@ -8,7 +8,7 @@ import api from '../services/api';
 import logo from '../assets/logosejahtera.png';
 
 const getInitials = (name) => {
-  if (!name) return 'US';
+  if (!name) return '';
   const words = name.trim().split(' ');
   if (words.length >= 2) {
     return (words[0][0] + words[1][0]).toUpperCase();
