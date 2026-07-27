@@ -36,7 +36,7 @@ export default function Bantuan() {
   const faqs = [
     {
       question: "Bagaimana AI menghitung kalori saya?",
-      answer: "AI kami (didukung oleh Google Gemini) memproses deskripsi teks makanan Anda, memecahnya menjadi bahan-bahan penyusun, dan memperkirakan takaran standar. AI kemudian mencocokkannya dengan basis data nutrisi global untuk menghasilkan estimasi kalori dan makronutrisi yang sangat akurat secara instan."
+      answer: "AI kami memproses deskripsi teks makanan Anda, memecahnya menjadi bahan-bahan penyusun, dan memperkirakan takaran standar. AI kemudian mencocokkannya dengan basis data nutrisi global untuk menghasilkan estimasi kalori dan makronutrisi yang sangat akurat secara instan."
     },
     {
       question: "Apakah data metrik kesehatan saya aman?",
