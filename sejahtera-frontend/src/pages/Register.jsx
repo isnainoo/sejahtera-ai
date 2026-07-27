@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, Sparkles, Calendar, Users } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Sparkles, Calendar, Users, Eye, EyeOff } from 'lucide-react';
 import logo from '../assets/logosejahtera.png';
 import api from '../services/api';
 
@@ -18,6 +18,8 @@ export default function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -166,14 +168,21 @@ export default function Register() {
               <Lock size={20} />
             </div>
             <input 
-              type="password" 
+              type={showPassword ? "text" : "password"} 
               name="password"
               required
               placeholder="Password (Min. 8 Karakter)" 
               value={formData.password}
               onChange={handleChange}
-              className="w-full bg-black/20 border border-white/10 rounded-2xl py-3 md:py-4 pl-12 pr-4 outline-none text-white placeholder-gray-400 focus:border-brand-light focus:bg-black/30 transition-all text-sm md:text-base"
+              className="w-full bg-black/20 border border-white/10 rounded-2xl py-3 md:py-4 pl-12 pr-12 outline-none text-white placeholder-gray-400 focus:border-brand-light focus:bg-black/30 transition-all text-sm md:text-base"
             />
+            <button 
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-light focus:outline-none transition-colors"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           <div className="relative group">
@@ -181,14 +190,21 @@ export default function Register() {
               <Lock size={20} />
             </div>
             <input 
-              type="password" 
+              type={showConfirmPassword ? "text" : "password"} 
               name="confirmPassword"
               required
               placeholder="Konfirmasi Password" 
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full bg-black/20 border border-white/10 rounded-2xl py-3 md:py-4 pl-12 pr-4 outline-none text-white placeholder-gray-400 focus:border-brand-light focus:bg-black/30 transition-all text-sm md:text-base"
+              className="w-full bg-black/20 border border-white/10 rounded-2xl py-3 md:py-4 pl-12 pr-12 outline-none text-white placeholder-gray-400 focus:border-brand-light focus:bg-black/30 transition-all text-sm md:text-base"
             />
+            <button 
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-brand-light focus:outline-none transition-colors"
+            >
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           <button 

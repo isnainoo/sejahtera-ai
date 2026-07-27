@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, Utensils, Activity, HelpCircle, 
-  User, Mail, Calendar, Users, Ruler, Lock, ShieldCheck, Save, Sparkles, CheckCircle2, LogOut
+  User, Mail, Calendar, Users, Ruler, Lock, ShieldCheck, Save, Sparkles, CheckCircle2, LogOut,
+  Eye, EyeOff 
 } from 'lucide-react';
 import api from '../services/api';
 import logo from '../assets/logosejahtera.png';
@@ -14,6 +15,10 @@ export default function Profile() {
   const [isSavingPass, setIsSavingPass] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [passMessage, setPassMessage] = useState({ type: '', text: '' });
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -256,21 +261,66 @@ export default function Profile() {
                       <label className="text-xs md:text-sm font-bold text-gray-500 mb-1 block">Password Saat Ini</label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        <input type="password" name="oldPassword" required value={passData.oldPassword} onChange={handlePassChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-brand-green text-sm" placeholder="Masukkan password lama" />
+                        <input 
+                          type={showOldPassword ? "text" : "password"} 
+                          name="oldPassword" 
+                          required 
+                          value={passData.oldPassword} 
+                          onChange={handlePassChange} 
+                          className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-10 outline-none focus:border-brand-green text-sm" 
+                          placeholder="Masukkan password lama" 
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => setShowOldPassword(!showOldPassword)} 
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-green focus:outline-none"
+                        >
+                          {showOldPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                       </div>
                     </div>
                     <div>
                       <label className="text-xs md:text-sm font-bold text-gray-500 mb-1 block">Password Baru</label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green" size={18} />
-                        <input type="password" name="newPassword" required value={passData.newPassword} onChange={handlePassChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-brand-green text-sm" placeholder="Minimal 8 karakter" />
+                        <input 
+                          type={showNewPassword ? "text" : "password"} 
+                          name="newPassword" 
+                          required 
+                          value={passData.newPassword} 
+                          onChange={handlePassChange} 
+                          className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-10 outline-none focus:border-brand-green text-sm" 
+                          placeholder="Minimal 8 karakter" 
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => setShowNewPassword(!showNewPassword)} 
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-green focus:outline-none"
+                        >
+                          {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                       </div>
                     </div>
                     <div>
                       <label className="text-xs md:text-sm font-bold text-gray-500 mb-1 block">Konfirmasi Password Baru</label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-green" size={18} />
-                        <input type="password" name="confirmPassword" required value={passData.confirmPassword} onChange={handlePassChange} className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-4 outline-none focus:border-brand-green text-sm" placeholder="Ketik ulang password baru" />
+                        <input 
+                          type={showConfirmPassword ? "text" : "password"} 
+                          name="confirmPassword" 
+                          required 
+                          value={passData.confirmPassword} 
+                          onChange={handlePassChange} 
+                          className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-10 pr-10 outline-none focus:border-brand-green text-sm" 
+                          placeholder="Ketik ulang password baru" 
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-green focus:outline-none"
+                        >
+                          {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
                       </div>
                     </div>
                     <button type="submit" disabled={isSavingPass} className="w-full mt-4 py-3 bg-white border-2 border-brand-green text-brand-dark hover:bg-brand-light/30 rounded-xl font-bold transition-colors flex items-center justify-center gap-2 disabled:opacity-70">
