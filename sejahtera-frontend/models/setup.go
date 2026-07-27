@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"golang.org/x/crypto/bcrypt"
@@ -15,23 +14,32 @@ var DB *gorm.DB
 func ConnectDatabase() {
 	dsn := os.Getenv("DB_DSN")
 	
-	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Gagal terkoneksi ke database:", err)
+	// 1. Pengecekan jika Vercel gagal membaca Environment Variable
+	if dsn == "" {
+		fmt.Println("CRITICAL ERROR: Variabel DB_DSN kosong atau tidak terbaca!")
+		return 
 	}
 
+	// 2. Koneksi ke Database
+	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Println("CRITICAL ERROR KONEKSI DATABASE AIVEN:", err)
+		return
+	}
+
+	// 3. Migrasi Tabel
 	err = database.AutoMigrate(
 		&User{},
 		&UserProfile{},
 		&DailyMetric{}, 
 		&FoodLog{},
 	)
-	
 	if err != nil {
-		log.Fatal("Gagal melakukan migrasi database:", err)
+		fmt.Println("CRITICAL ERROR MIGRASI DATABASE:", err)
+		return
 	}
 
-	// Seed default admin if it doesn't exist
+	// 4. Seed default admin
 	var count int64
 	database.Model(&User{}).Where("email = ?", "admin@sejahtera.com").Count(&count)
 	if count == 0 {
