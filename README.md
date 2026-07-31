@@ -4,10 +4,6 @@ ui : https://www.figma.com/design/aLXx1W6pZ3We8oZY6LXbKK/Lomba-UI-UX?node-id=0-1
 
 Sejahtera AI adalah aplikasi pemantau kesehatan harian dan rekomendasi nutrisi cerdas berbasis web. Aplikasi ini menggabungkan pencatatan metrik fisik, jurnal makanan, dan rekomendasi resep masakan cerdas (Koki AI) yang dianalisis secara real-time menggunakan *Large Language Model*.
 
-## Arsitektur & Struktur Monorepo
-
-Proyek ini dibangun menggunakan pendekatan Monorepo Serverless. Seluruh kode Frontend dan Backend dikelola dalam satu proyek tunggal dan di-deploy secara terintegrasi di Vercel Cloud Platform.
-
 ### Note on Backend Restructuring
 > Pada arsitektur awal, proyek ini terbagi menjadi dua subfolder terpisah (`sejahtera-frontend` dan `sejahtera-backend`).
 >
