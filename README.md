@@ -1,6 +1,6 @@
 ui : https://www.figma.com/design/aLXx1W6pZ3We8oZY6LXbKK/Lomba-UI-UX?node-id=0-1&p=f&t=J2G76lpxDCWttjp8-0
 
-# 🌿 Sejahtera AI
+# Sejahtera AI
 
 Sejahtera AI adalah aplikasi pemantau kesehatan harian dan rekomendasi nutrisi cerdas berbasis web. Aplikasi ini menggabungkan pencatatan metrik fisik, jurnal makanan, dan rekomendasi resep masakan cerdas (Koki AI) yang dianalisis secara real-time menggunakan *Large Language Model*.
 
