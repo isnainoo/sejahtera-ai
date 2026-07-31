@@ -31,5 +31,5 @@ Sejahtera AI adalah aplikasi pemantau kesehatan harian dan rekomendasi nutrisi c
 *   **Auth:** JWT (JSON Web Tokens) & Bcrypt Hashing
 
 ### **Database & AI Engine**
-*   **Database:** MySQL Serverless Hosted on **Aiven Cloud**
+*   **Database:** MySQL Serverless
 *   **AI Engine:** Groq API (LLM - Llama Model)
