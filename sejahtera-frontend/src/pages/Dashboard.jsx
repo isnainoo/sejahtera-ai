@@ -148,7 +148,6 @@ export default function Dashboard() {
       </aside>
 
       <main className="flex-1 flex flex-col overflow-y-auto w-full relative">
-        {/* HEADER DIPERBAIKI: Mengganti bg-white/80 backdrop-blur-md menjadi bg-white solid dan z-30 */}
         <header className="h-16 md:h-20 bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
           <h1 className="text-xl md:text-2xl font-bold text-brand-dark flex items-center gap-2">
             <span className="md:hidden"><img src={logo} alt="Logo" className="w-6 h-6 object-contain" /></span>

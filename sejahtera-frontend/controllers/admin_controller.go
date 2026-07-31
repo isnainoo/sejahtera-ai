@@ -9,7 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// AdminGetUsers retrieves all users
 func AdminGetUsers(c *gin.Context) {
 	var users []models.User
 	if err := models.DB.Preload("Profile").Find(&users).Error; err != nil {
@@ -29,7 +28,6 @@ type AdminCreateUserInput struct {
 	Role     string `json:"role" binding:"required"`
 }
 
-// AdminCreateUser handles user creation by admin
 func AdminCreateUser(c *gin.Context) {
 	var input AdminCreateUserInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -63,13 +61,12 @@ func AdminCreateUser(c *gin.Context) {
 type AdminUpdateUserInput struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password"` // optional, only update if provided
+	Password string `json:"password"` 
 	Age      int    `json:"age" binding:"required"`
 	Gender   string `json:"gender" binding:"required"`
 	Role     string `json:"role" binding:"required"`
 }
 
-// AdminUpdateUser handles user updates by admin
 func AdminUpdateUser(c *gin.Context) {
 	idParam := c.Param("id")
 	userID, err := strconv.ParseUint(idParam, 10, 32)
@@ -117,7 +114,6 @@ func AdminUpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User berhasil diperbarui", "data": user})
 }
 
-// AdminDeleteUser handles user deletion
 func AdminDeleteUser(c *gin.Context) {
 	idParam := c.Param("id")
 	userIDToDelete, err := strconv.ParseUint(idParam, 10, 32)
@@ -126,7 +122,6 @@ func AdminDeleteUser(c *gin.Context) {
 		return
 	}
 
-	// Prevent admin from deleting themselves
 	currentUserIDClaim, exists := c.Get("user_id")
 	if exists {
 		currID := uint(currentUserIDClaim.(float64))

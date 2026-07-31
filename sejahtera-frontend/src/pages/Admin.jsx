@@ -14,13 +14,9 @@ export default function Admin() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-  
-  // Modals state
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  
-  // Form state
   const [formData, setFormData] = useState({
     id: '',
     name: '',
@@ -35,7 +31,6 @@ export default function Admin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
-  // Authentication & Role verification
   useEffect(() => {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
@@ -49,7 +44,6 @@ export default function Admin() {
     }
   }, [navigate]);
 
-  // Show auto-dismiss toast
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => {
@@ -57,7 +51,6 @@ export default function Admin() {
     }, 3000);
   };
 
-  // Fetch Users list
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
@@ -78,13 +71,11 @@ export default function Admin() {
     navigate('/login');
   };
 
-  // Create User
   const handleCreateUser = async (e) => {
     e.preventDefault();
     setFormError('');
     setIsSubmitting(true);
 
-    // Validate password
     if (!formData.password || formData.password.length < 8) {
       setFormError('Password wajib diisi dan minimal 8 karakter');
       setIsSubmitting(false);
@@ -113,7 +104,6 @@ export default function Admin() {
     }
   };
 
-  // Edit User
   const handleEditUser = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -128,7 +118,6 @@ export default function Admin() {
         role: formData.role
       };
 
-      // Only add password if changed
       if (formData.password) {
         payload.password = formData.password;
       }
@@ -145,7 +134,6 @@ export default function Admin() {
     }
   };
 
-  // Delete User
   const handleDeleteUser = async () => {
     setIsSubmitting(true);
     try {
@@ -193,13 +181,11 @@ export default function Admin() {
     setFormError('');
   };
 
-  // Search filtering
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Math Statistics
   const totalUsers = users.length;
   const adminCount = users.filter(u => u.role === 'admin').length;
   const standardUsersCount = totalUsers - adminCount;
@@ -213,8 +199,6 @@ export default function Admin() {
 
   return (
     <div className="flex h-screen bg-[#F8FAFC] overflow-hidden font-sans">
-      
-      {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-100 flex flex-col justify-between hidden md:flex shrink-0">
         <div>
           <div className="h-20 flex items-center px-8 border-b border-gray-100">
@@ -242,10 +226,7 @@ export default function Admin() {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 flex flex-col overflow-y-auto w-full relative">
-        
-        {/* Header */}
         <header className="h-16 md:h-20 bg-white/80 backdrop-blur-md border-b border-gray-100 flex items-center justify-between px-4 md:px-8 sticky top-0 z-10">
           <h1 className="text-xl md:text-2xl font-bold text-brand-dark flex items-center gap-2">
             <span className="md:hidden"><img src={logo} alt="Logo" className="w-6 h-6 object-contain" /></span>
@@ -273,10 +254,7 @@ export default function Admin() {
           </div>
         </header>
 
-        {/* Inner Content */}
         <div className="p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-8">
-          
-          {/* Stats Dashboard Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
               <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mb-1">Total Pengguna</p>
@@ -316,7 +294,6 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* User Table Header Controls */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="p-4 md:p-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
               <div className="relative flex-1 max-w-md">
@@ -338,7 +315,6 @@ export default function Admin() {
               </button>
             </div>
 
-            {/* Table Content */}
             {isLoading ? (
               <div className="py-20 flex justify-center items-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-green"></div>
@@ -419,7 +395,6 @@ export default function Admin() {
         </div>
       </main>
 
-      {/* FLOATING TOASTS */}
       {toast.show && (
         <div className={`fixed bottom-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg border text-white transform transition-all duration-300 scale-100 ${
           toast.type === 'error' 
@@ -431,7 +406,6 @@ export default function Admin() {
         </div>
       )}
 
-      {/* ADD USER MODAL */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -553,7 +527,6 @@ export default function Admin() {
         </div>
       )}
 
-      {/* EDIT USER MODAL */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
@@ -674,7 +647,6 @@ export default function Admin() {
         </div>
       )}
 
-      {/* DELETE USER CONFIRMATION MODAL */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white w-full max-w-sm rounded-2xl shadow-xl p-6 text-center animate-in fade-in zoom-in-95 duration-200">

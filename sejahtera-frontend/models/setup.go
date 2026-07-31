@@ -13,21 +13,17 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	dsn := os.Getenv("DB_DSN")
-	
-	// 1. Pengecekan jika Vercel gagal membaca Environment Variable
 	if dsn == "" {
 		fmt.Println("CRITICAL ERROR: Variabel DB_DSN kosong atau tidak terbaca!")
 		return 
 	}
 
-	// 2. Koneksi ke Database
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Println("CRITICAL ERROR KONEKSI DATABASE AIVEN:", err)
 		return
 	}
 
-	// 3. Migrasi Tabel
 	err = database.AutoMigrate(
 		&User{},
 		&UserProfile{},
@@ -39,7 +35,6 @@ func ConnectDatabase() {
 		return
 	}
 
-	// 4. Seed default admin
 	var count int64
 	database.Model(&User{}).Where("email = ?", "admin@sejahtera.com").Count(&count)
 	if count == 0 {
