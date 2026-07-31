@@ -34,9 +34,11 @@ func generateAIAnalysisForMetric(weight, water, sleep float64) string {
 		return `[{"icon": "trend", "title": "Analisis Tertunda", "description": "Gagal terhubung ke AI. Silakan edit kembali metrik Anda nanti."}]`
 	}
 
+	// PEMBERSIH JSON: Ekstrak paksa hanya bagian array-nya saja
 	startIndex := strings.Index(aiResponseText, "[")
 	endIndex := strings.LastIndex(aiResponseText, "]")
 	if startIndex != -1 && endIndex != -1 && endIndex > startIndex {
+		// Mengambil teks dari kurung siku buka hingga kurung siku tutup
 		return aiResponseText[startIndex : endIndex+1]
 	}
 

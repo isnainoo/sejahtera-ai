@@ -112,16 +112,16 @@ export default function MetrikKesehatan() {
           </div>
           <nav className="p-4 space-y-2 mt-4 flex-1">
             <Link className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors" to="/dashboard">
-              <LayoutDashboard size="{20}"/> Beranda
+              <LayoutDashboard size={20}/> Beranda
             </Link>
             <Link className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 rounded-xl font-medium transition-colors" to="/nutrisi">
-              <Utensils size="{20}"/> Nutrisi (AI)
+              <Utensils size={20}/> Nutrisi (AI)
             </Link>
             <Link className="flex items-center gap-3 px-4 py-3 bg-brand-light text-brand-dark rounded-xl font-medium transition-colors" to="/metrik">
-              <Activity size="{20}"/> Metrik Kesehatan
+              <Activity size={20}/> Metrik Kesehatan
             </Link>
             <Link className="flex items-center gap-3 px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-brand-dark rounded-xl font-medium transition-colors" to="/bantuan">
-              <HelpCircle size="{20}"/> Bantuan
+              <HelpCircle size={20}/> Bantuan
             </Link>
           </nav>
         </div>
@@ -151,7 +151,7 @@ export default function MetrikKesehatan() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               <div className="bg-white/90 backdrop-blur-xl border border-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-lg flex flex-col items-center transition-transform hover:-translate-y-1">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-50 text-blue-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4">
-                  <Scale className="md:w-8 md:h-8" size="{24}"/>
+                  <Scale className="md:w-8 md:h-8" size={24}/>
                 </div>
                 <h3 className="font-bold text-gray-800 text-sm md:text-base">Berat Badan</h3>
                 <div className="flex items-end gap-2 w-full mt-2 md:mt-4">
@@ -162,7 +162,7 @@ export default function MetrikKesehatan() {
 
               <div className="bg-white/90 backdrop-blur-xl border border-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-lg flex flex-col items-center transition-transform hover:-translate-y-1">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-cyan-50 text-cyan-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4">
-                  <Droplets className="md:w-8 md:h-8" size="{24}"/>
+                  <Droplets className="md:w-8 md:h-8" size={24}/>
                 </div>
                 <h3 className="font-bold text-gray-800 text-sm md:text-base">Air Minum</h3>
                 <div className="flex items-end gap-2 w-full mt-2 md:mt-4">
@@ -173,7 +173,7 @@ export default function MetrikKesehatan() {
 
               <div className="bg-white/90 backdrop-blur-xl border border-white p-4 md:p-6 rounded-2xl md:rounded-3xl shadow-lg flex flex-col items-center transition-transform hover:-translate-y-1">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-indigo-50 text-indigo-500 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4">
-                  <Moon className="md:w-8 md:h-8" size="{24}"/>
+                  <Moon className="md:w-8 md:h-8" size={24}/>
                 </div>
                 <h3 className="font-bold text-gray-800 text-sm md:text-base">Jam Tidur</h3>
                 <div className="flex items-end gap-2 w-full mt-2 md:mt-4">
@@ -199,13 +199,21 @@ export default function MetrikKesehatan() {
               {history.map((item) => {
                 const dateString = new Date(item.date).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 const isEditing = editingId === item.id;
+                
                 let parsedAnalysis = null;
                 let rawAnalysis = item.analysis || "";
 
                 try {
                   const parsed = JSON.parse(rawAnalysis);
+                  
                   if (Array.isArray(parsed)) {
                     parsedAnalysis = parsed;
+                  } 
+                  else if (parsed && parsed.data && Array.isArray(parsed.data)) {
+                    parsedAnalysis = parsed.data;
+                  }
+                  else if (parsed && parsed.analysis && Array.isArray(parsed.analysis)) {
+                    parsedAnalysis = parsed.analysis;
                   }
                 } catch (e) {
                 }
@@ -217,11 +225,11 @@ export default function MetrikKesehatan() {
                       <span className="font-bold text-gray-700 text-xs md:text-base">{dateString}</span>
                       {!isEditing ? (
                          <button onClick={() => startEdit(item)} className="text-gray-500 hover:text-brand-green transition-colors flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm bg-gray-50 px-3 py-1.5 md:py-2 rounded-lg border border-gray-100">
-                           <Pencil className="md:w-4 md:h-4" size="{12}"/> Edit Data
+                           <Pencil className="md:w-4 md:h-4" size={12}/> Edit Data
                          </button>
                       ) : (
                          <button onClick={() => setEditingId(null)} className="text-red-500 hover:text-red-700 transition-colors flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm bg-red-50 px-3 py-1.5 md:py-2 rounded-lg border border-red-100">
-                           <X className="md:w-4 md:h-4" size="{12}"/> Batal
+                           <X className="md:w-4 md:h-4" size={12}/> Batal
                          </button>
                       )}
                     </div>
@@ -243,7 +251,7 @@ export default function MetrikKesehatan() {
                           </div>
                         </div>
                         <button type="submit" disabled={isSaving} className="w-full py-3 bg-brand-green text-white rounded-xl font-bold flex justify-center items-center gap-2 disabled:opacity-70 text-xs md:text-sm">
-                          {isSaving ? 'Memproses...' : <><Save size="{16}"/> Update & Analisis Ulang</>}
+                          {isSaving ? 'Memproses...' : <><Save size={16}/> Update & Analisis Ulang</>}
                         </button>
                       </form>
                     ) : (
@@ -270,12 +278,11 @@ export default function MetrikKesehatan() {
                             <Bot className="text-brand-green w-4 h-4 md:w-5 md:h-5"/> Analisis AI:
                           </h4>
                           
-                          {/* RENDER LOGIC YANG BARU */}
                           {parsedAnalysis ? (
                             parsedAnalysis.map((ai, idx) => (
                               <div key={idx} className="bg-brand-light/30 p-3 md:p-4 rounded-xl md:rounded-2xl flex gap-3 md:gap-4 items-start">
                                 <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 bg-brand-green/20 text-brand-dark rounded-full flex items-center justify-center mt-0.5 md:mt-1">
-                                  {ai.icon === 'trend' ? <TrendingUp className="md:w-5 md:h-5" size="{16}"/> : <CheckCircle2 className="md:w-5 md:h-5" size="{16}"/>}
+                                  {ai.icon === 'trend' ? <TrendingUp className="md:w-5 md:h-5" size={16}/> : <CheckCircle2 className="md:w-5 md:h-5" size={16}/>}
                                 </div>
                                 <div>
                                   <h3 className="font-bold text-brand-dark mb-0.5 md:mb-1 text-xs md:text-sm">{ai.title}</h3>
@@ -309,23 +316,23 @@ export default function MetrikKesehatan() {
 
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 px-2 pb-safe">
         <Link className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors" to="/dashboard">
-          <LayoutDashboard size="{20}"/>
+          <LayoutDashboard size={20}/>
           <span className="text-[10px] font-medium mt-1">Beranda</span>
         </Link>
         <Link className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors" to="/nutrisi">
-          <Utensils size="{20}"/>
+          <Utensils size={20}/>
           <span className="text-[10px] font-medium mt-1">Nutrisi</span>
         </Link>
         <Link className="flex flex-col items-center text-brand-green transition-colors" to="/metrik">
-          <Activity size="{20}"/>
+          <Activity size={20}/>
           <span className="text-[10px] font-bold mt-1">Metrik</span>
         </Link>
         <Link className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors" to="/bantuan">
-          <HelpCircle size="{20}"/>
+          <HelpCircle size={20}/>
           <span className="text-[10px] font-medium mt-1">Bantuan</span>
         </Link>
         <Link className="flex flex-col items-center text-gray-400 hover:text-brand-green transition-colors" to="/profile">
-          <User size="{20}"/>
+          <User size={20}/>
           <span className="text-[10px] font-medium mt-1">Profil</span>
         </Link>
       </nav>
