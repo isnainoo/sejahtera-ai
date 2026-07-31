@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sejahtera-backend/models"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ func generateAIAnalysisForMetric(weight, water, sleep float64) string {
 	- Tidur: %.1f jam (Target 7-8 jam)
 	
 	Berikan 2 poin analisis personal. 
-	Format HARUS JSON murni berupa array persis seperti ini:
+	Format HARUS JSON murni berupa array persis seperti ini tanpa markdown, tanpa awalan, tanpa akhiran:
 	[
 	  {"icon": "check", "title": "Judul positif (maks 4 kata)", "description": "Penjelasan mendalam..."},
 	  {"icon": "trend", "title": "Judul progres (maks 4 kata)", "description": "Penjelasan dampak..."}
@@ -32,6 +33,13 @@ func generateAIAnalysisForMetric(weight, water, sleep float64) string {
 	if err != nil {
 		return `[{"icon": "trend", "title": "Analisis Tertunda", "description": "Gagal terhubung ke AI. Silakan edit kembali metrik Anda nanti."}]`
 	}
+
+	startIndex := strings.Index(aiResponseText, "[")
+	endIndex := strings.LastIndex(aiResponseText, "]")
+	if startIndex != -1 && endIndex != -1 && endIndex > startIndex {
+		return aiResponseText[startIndex : endIndex+1]
+	}
+
 	return aiResponseText
 }
 
